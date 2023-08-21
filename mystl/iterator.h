@@ -144,6 +144,57 @@ namespace mystl
 		return static_cast<typename iterator_traits<Iterator>::value_type*>(0);
 	}
 
+	//以下函数用于计算迭代器间的距离
+
+	//distance 的 input_iterator_tag 版本
+	template <class InputIterator>
+	typename iterator_traits<InputIterator>::difference_type
+		distance_dispatch(InputIterator first, InputIterator last, input_iterator_tag)
+	{
+		typename iterator_traits<InputIterator>::difference_type n = 0;
+		while (first != last)
+		{
+			++first;
+			++n;
+		}
+		return n;
+	}
+
+	//distance 的 random_access_iterator_tag 的版本
+	template <class RandomIter>
+	typename iterator_traits<RandomIter>::difference_type
+		distance_dispatch(RandomIter first, RandomIter last,
+			random_access_iterator_tag)
+	{
+		return last - first;
+	}
+
+	template <class InputIterator>
+	typename iterator_traits<InputIterator>::difference_type
+		distance(InputIterator first, InputIterator last)
+	{
+		return distance_dispatch(first, last, iterator_category(first));
+	}
+
+	//以下函数用于让迭代器前进n个距离
+
+	//advance 的 input_iterator_tag 版本
+	template <class InputIterator, class Distance>
+	void advance_dispatch(InputIterator& i, Distance n, input_iterator_tag)
+	{
+		while (n--) i++;
+	}
+
+	//advance 的 bidirectional_iterator_tag版本
+	template <class BidirectionalIterator, class Distance>
+	void advance_dispatch(BidirectionalIterator& i, Distance n, bidirectional_iterator_tag)
+	{
+		if (n >= 0)
+			while (n--) ++i;
+		else
+			while (n++) --i;
+	}
+
 }
 
 
