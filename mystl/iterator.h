@@ -308,9 +308,58 @@ namespace mystl
 	};
 
 	//重载 operator-
+	template <class Iterator>
+	typename reverse_iterator<Iterator>::difference_type
+		operator-(const reverse_iterator<Iterator>& lhs,
+			const reverse_iterator<Iterator>& rhs)
+	{
+		return rhs.base() - lhs.base();
+	}
 
-}
 
+	//重载比较操作符
+	template <class Iterator>
+	bool operator==(const reverse_iterator<Iterator>& lhs,
+		const reverse_iterator<Iterator>& rhs)
+	{
+		return lhs.base() == rhs.base();
+	}
 
+	template <class Iterator>
+	bool operator<(const reverse_iterator<Iterator>& lhs,
+		const reverse_iterator<Iterator>& rhs)
+	{
+		return rhs.base() < lhs.base();
+	}
+
+	template <class Iterator>
+	bool operator!=(const reverse_iterator<Iterator>& lhs,
+		const reverse_iterator<Iterator>& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	template <class Iterator>
+	bool operator>(const reverse_iterator<Iterator>& lhs,
+		const reverse_iterator<Iterator>& rhs)
+	{
+		return rhs < lhs;
+	}
+
+	template <class Iterator>
+	bool operator<=(const reverse_iterator<Iterator>& lhs,
+		const reverse_iterator<Iterator>& rhs)
+	{
+		return !(rhs < lhs);
+	}
+
+	template <class Iterator>
+	bool operator>=(const reverse_iterator<Iterator>& lhs,
+		const reverse_iterator<Iterator>& rhs)
+	{
+		return !(lhs < rhs);
+	}
+
+}  //namespace std
 
 #endif 
