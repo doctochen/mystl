@@ -12,7 +12,7 @@ namespace mystl
 	template<class T, T v>
 	struct m_integral_constant
 	{
-		static constexptr T value = v;
+		static constexpr T value = v;
 	};
 
 	template<bool b>
