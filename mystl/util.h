@@ -187,7 +187,7 @@ namespace mystl
 
 
 		//copy assign for this pair
-		pair& operator=(const pair& rhs)
+		pair& operator=(const pair& rhs)  //等式右边是左值
 		{
 			if (this != &rhs)
 			{
@@ -198,7 +198,7 @@ namespace mystl
 		}
 
 		//move assign for this pair
-		pair& operator=(pair&& rhs)
+		pair& operator=(pair&& rhs)   //等式右边是右值
 		{
 			if (this != &rhs)
 			{
@@ -207,7 +207,74 @@ namespace mystl
 			}
 			return *this;
 		}
+
+
+		//copy assign for other pair
+		template <class Other1, class Other2>
+		pair& operator=(const pair<Other1, Other2>& other)
+		{
+			first = other.first;
+			second = other.second;
+			return *this;
+		}
+
+		//move assign for other pair
+		template <class Other1, class Other2>
+		pair& operator=(pair<Other1, Other2>&& other)
+		{
+			first = mystl::forward<Other1>(other.first);
+			second = mystl::forward<Other2>(other.second);
+			return *this;
+		}
+
+		~pair() = default;
+
+		void swap(pair& other)
+		{
+			mystl::swap(first, other.first);
+			mystl::swap(second, other.second);
+		}
 	};
+
+
+	//重载比较运算符
+	template <class Ty1, class Ty2>
+	bool operator==(const pair<Ty1, Ty2>& lhs, const pair<Ty1, Ty2>& rhs)
+	{
+		return lhs.first == rhs.first && rhs.second == lhs.second;
+	}
+
+	template <class Ty1, class Ty2>
+	bool operator<(const pair<Ty1, Ty2>& lhs, const pair<Ty1, Ty2>& rhs)
+	{
+		return lhs.first < rhs.first || (lhs.first == rhs.first && lhs.second < rhs.second);
+	}
+
+	template <class Ty1, class Ty2>
+	bool operator!=(const pair<Ty1, Ty2>& lhs, const pair<Ty1, Ty2>& rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	template <class Ty1, class Ty2>
+	bool operator>(const pair<Ty1, Ty2>& lhs, const pair<Ty1, Ty2>& rhs)
+	{
+		return rhs < lhs;
+	}
+
+	template<class Ty1, class Ty2>
+	bool operator<=(const pair<Ty1, Ty2>& lhs, const pair<Ty1, Ty2>& rhs)
+	{
+		return !(rhs < lhs);
+	}
+
+	template <class Ty1, class Ty2>
+	bool operator>=(const pair<Ty1, Ty2>& lhs, const pair<Ty1, Ty2>& rhs)
+	{
+		return !(lhs < rhs);
+	}
+
+
 }
 
 
