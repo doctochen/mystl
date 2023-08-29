@@ -68,6 +68,47 @@ namespace mystl
 		return resoult;
 	}
 
+	//random_access_iterator_tag版本
+	template <class RandomIter, class OutputIter>
+	OutputIter uncheck_copy_cat(RandomIter first, RandomIter last,
+		OutputIter result, mystl::random_access_iterator_tag)
+	{
+		for (auto n = last - first; n > 0; --n, first++, result++)
+		{
+			*result = *first;
+		}
+		return result;
+	}
+
+	template <class InputIter, class OutputIter>
+	OutputIter uncheck_copy(InputIter first, InputIter last, OutputIter result)
+	{
+		return uncheck_copy_cat(first, last, result, iterator_category(first));
+	}
+
+	//为 trivially_copy_assignable 类型提供特化版本
+	template <class Tp, class Up>
+	typename std::enable_if<
+		std::is_same<typename std::remove_const<Tp>::type, Up>::value&&
+		std::is_trivially_copy_assignable<Up>::value,
+		Up*>::type
+		uncheck_copy(Tp* first, Tp* last, Up* result)
+	{
+		int n = static_cast<size_t> (last - first);
+		if (n != 0)
+			std::memmove(result, first, n * sizeof(Up));
+		return result + n;	
+	}
+
+
+	template <class InputIter, class OutputIter>
+	OutputIter copy(InputIter first, InputIter last, OutputIter result)
+	{
+		return uncheck_copy(first, last, result);
+	}
+
+
+
 
 }
 
