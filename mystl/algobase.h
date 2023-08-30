@@ -108,6 +108,38 @@ namespace mystl
 	}
 
 
+	//°Ñ[first, second]¿½±´µ½[result - (last - first), result]
+	template <class BidirectionalIter1, class BidirectionalIter2>
+	BidirectionalIter2 uncheck_copy_backward_cat(BidirectionalIter1 first,
+		BidirectionalIter1 last, BidirectionalIter2 result, mystl::bidirectional_iterator_tag)
+	{
+		while (first != last)
+		{
+			*--result = *--last;
+		}
+		return result;
+	}
+
+
+	template <class RandomIter1, class BidrectionalIter2>
+	BidrectionalIter2 uncheck_copy_backward_cat(RandomIter1 first,
+		RandomIter1 last, BidrectionalIter2 result, mystl::random_access_iterator_tag)
+	{
+		for (int n = (last - first); n > 0; n--)
+		{
+			*--result = *--last;
+		}
+		return result;
+	}
+
+	template <class BidrectionalIter1, class BidrectionalIter2>
+	BidrectionalIter2 uncheck_copy_backward(BidrectionalIter1 first,
+		BidrectionalIter1 last, BidrectionalIter2 result)
+	{
+		return uncheck_copy_backward_cat(first, last, result, iterator_category(first));
+	}
+
+
 
 
 }
