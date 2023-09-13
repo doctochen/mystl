@@ -140,7 +140,59 @@ namespace mystl
 	}
 
 
+	template <class Tp, class Up>
+	typename std::enable_if<
+		std::is_same<typename std::remove_const<Tp>::type, Up>::value&&
+		std::is_trivially_copy_assignable<Up>::value,
+		Up*>::type
+		unchecked_copy_backward(Tp* first, Tp* last, Up* result)
+	{
+		const auto n = static_cast<size_t>(last - first);
+		if (0 != n)
+		{
+			result -= n;
+			std::memmove(result, first, n * sizeof(Up));
+		}
+		return result;
+	}
 
+	template <class BidirectionalIter1, class BidirectionalIter2>
+	BidirectionalIter2
+		copy_backward(BidirectionalIter1 first, BidirectionalIter1 last,
+			BidirectionalIter2 result)
+	{
+		return unchecked_copy_backward(first, last, result);
+	}
+
+	/*
+	* copy_if 把（first， last）内的元素拷贝到result开始的位置
+	*/
+	template <class InputIter, class OutputIter, class UnaryPredicate>
+	OutputIter
+		copy_if(InputIter first, InputIter last, OutputIter result,
+			UnaryPredicate unary_pred)
+	{
+		for (; first != last; ++first)
+		{
+			if (unary_pred(*first))
+			{
+				*result++ = *first;
+			}
+		}
+		return result;
+	}
+
+	//copy_n把区间[first, first + n)的元素都拷贝到[result, result + n)上
+	template <class InputIter, class Size, class OutputIter>
+	mystl::pair<InputIter, OutputIter>
+		unchecked_copy_n(InputIter first, OutputIter result, mystl::input_iterator_tag)
+	{
+		for (; n > 0; first++, result++)
+		{
+			*result = *first;
+		}
+		return mystl::pair<InputIter, OutputIter>(first, result);
+	}
 
 }
 
