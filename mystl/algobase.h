@@ -185,13 +185,42 @@ namespace mystl
 	//copy_n把区间[first, first + n)的元素都拷贝到[result, result + n)上
 	template <class InputIter, class Size, class OutputIter>
 	mystl::pair<InputIter, OutputIter>
-		unchecked_copy_n(InputIter first, OutputIter result, mystl::input_iterator_tag)
+		unchecked_copy_n(InputIter first, Size n, OutputIter result, mystl::input_iterator_tag)
 	{
 		for (; n > 0; first++, result++)
 		{
 			*result = *first;
 		}
 		return mystl::pair<InputIter, OutputIter>(first, result);
+	}
+
+	template <class RandomIter, class OutputIter, class Size>
+	mystl::pair<RandomIter, OutputIter>
+		unchecked_copy_n(RandomIter first, Size n, OutputIter result,
+			mystl::random_access_iterator_tag)
+	{
+		auto last = first + n;
+		return pair<last, mystl::copy(first, last, result)>;
+	}
+
+	template <class InputIter, class Size, class OutputIter>
+	mystl::pair<InputIter, OutputIter>
+		copy_n(InputIter first, Size n, OutputIter result)
+	{
+		return unchecked_copy_n(first, n, result, iterator_category(first));
+	}
+
+
+	//move操作，把first~last 移动到 result ~ result + (last - first)
+	template <class InputIter, class OutputIter>
+	OutputIter unchecked_move_cat(InputIter first, InputIter last, OutputIter result,
+		mystl::input_iterator_tag)
+	{
+		for (; first != last; result, first++)
+		{
+			*result = mystl::move(*first);
+		}
+		return result;
 	}
 
 }
